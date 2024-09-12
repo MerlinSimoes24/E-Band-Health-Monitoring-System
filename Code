@@ -1,0 +1,47 @@
+#include <ESP8266WiFi.h>  
+ #include <WiFiClient.h>  
+ #include <ThingSpeak.h>  
+//#include <FirebaseArduino.h>
+
+// Set these to run example.
+//#define FIREBASE_HOST "project-rett-syndrome.firebaseio.com"
+//#define FIREBASE_AUTH "IVPddH64hxIkFR7AzsLRnkYbISt8RpPzPj9N5Dh5"
+#define WIFI_SSID " "  //Add WIFI SSID
+#define WIFI_PASSWORD " " //Add WIFI PASSWORD
+ boolean data_state = false;    
+ WiFiClient client;  
+ unsigned long myChannelNumber = 419828;  
+ //const char * myWriteAPIKey = " "; //Add API Key here
+ const char * myWriteAPIKey =" "; //Add API Key here
+ uint8_t heartbeats, HVR;  
+
+//#define dht_dpin D0 //no ; here. Set equal to channel sensor is ons
+ void setup()  
+ {  
+  Serial.begin(115200);  
+  pinMode(D7,OUTPUT);
+  // Connect to WiFi network  
+  Serial.println();  
+  Serial.println();  
+  Serial.print("Connecting to ");  
+  Serial.println(WIFI_SSID);  
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);  
+  while (WiFi.status() != WL_CONNECTED){  
+   delay(500);  
+   Serial.print(".");  
+  }  
+  Serial.println("");  
+  Serial.println("WiFi connected");  
+  // Print the IP address  
+  Serial.println(WiFi.localIP());  
+  //Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  ThingSpeak.begin(client);  
+ }  
+ void loop(){  
+   heartbeats = analogRead(A0);
+  Serial.print("Heartbeat Value is :");  
+  Serial.println(heartbeats);
+  ThingSpeak.writeField(myChannelNumber, 1, heartbeats, myWriteAPIKey);  
+  delay(1000);
+ 
+ }  
